@@ -1,0 +1,13 @@
+version: '3'
+services:
+  rethinkdb:
+    image: rethinkdb:2.3
+    ports:
+      - "8080:8080"
+      - "28015:28015"
+      - "29015:29015"
+    restart: always
+    volumes:
+      - "/tmp/rethinkdb:/data"
+    command: "rethinkdb --bind all --cache-size 2048"
+
