@@ -1,0 +1,25 @@
+version: '3'
+services:
+  adbd:
+    image: sorccu/adb
+    privileged: true
+    ports:
+      - "5037:5037"
+    restart: always
+    volumes:
+      - "/dev/bus/usb:/dev/bus/usb"
+
+  stf-local:
+    image: openstf/stf
+    links:
+      - adbd
+    ports:
+      - "7100:7100"
+      - "7110:7110"
+      - "7120:7120"
+      - "7400-7500:7400-7500"
+    restart: always
+    environment:
+      - RETHINKDB_PORT_28015_TCP=tcp://${RETHINKDB_IP}:28015
+      - STF_LOCAL_PROVIDER=${LOCATION_NAME}
+    command: stf local --provider-min-port 7400 --provider-max-port 7500 --adb-host adbd --public-ip ${PUBLIC_IP}
